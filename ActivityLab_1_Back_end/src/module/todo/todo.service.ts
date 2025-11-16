@@ -19,23 +19,15 @@ export class TodoService {
   ) {}
 
   // 🟢 Get all todos from the database
-  async findAll(): Promise<Todo[]> {
-    try {
-      // Fetch all todos from the database
-      const todos: Todo[] = await this.todoRepo.find();
-
-      // If the list is empty, throw a "Not Found" error
-      if (!todos.length) {
-        throw new NotFoundException('No todos found in the database.');
+    async findAll(): Promise<Todo[]> {
+      try {
+        const todos: Todo[] = await this.todoRepo.find();
+        return todos; // return empty list instead of throwing error
+      } catch (error: unknown) {
+        throw new InternalServerErrorException('Failed to fetch todos.');
       }
-
-      // Return all todos
-      return todos;
-    } catch (error: unknown) {
-      // If any unexpected error occurs (like DB connection issue), throw a server error
-      throw new InternalServerErrorException('Failed to fetch todos.');
     }
-  }
+
 
   // 🔵 Get a single todo item by its ID
   async findOne(id: number): Promise<Todo> {
